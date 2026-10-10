@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.PGL_UT2_DAMFlix_Fase2_JEDH" parent="android:Theme.Material.Light.NoActionBar" />
+</resources>
