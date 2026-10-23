@@ -67,9 +67,9 @@ class MainActivity : ComponentActivity() {
 
                         NavigationBar {
                             listOf(
-                                Navegacion.Ruta.Form,
-                                Navegacion.Ruta.Perfil,
-                                Navegacion.Ruta.Lista
+                                Navegacion.Form,
+                                Navegacion.Perfil,
+                                Navegacion.Lista
                             ).forEach { ruta ->
                                 NavigationBarItem(
                                     selected = rutaActual == ruta.path,
@@ -93,16 +93,16 @@ class MainActivity : ComponentActivity() {
                 ) { innerPadding ->
                     NavHost(
                         navController = navController,
-                        startDestination = Navegacion.Ruta.Form.path,
+                        startDestination = Navegacion.Form.path,
                         modifier = Modifier.padding(innerPadding)
                     ) {
-                        composable(Navegacion.Ruta.Form.path) {
+                        composable(Navegacion.Form.path) {
                             FormularioPelis()
                         }
-                        composable(Navegacion.Ruta.Perfil.path) {
+                        composable(Navegacion.Perfil.path) {
                             CriticosAutores()
                         }
-                        composable(Navegacion.Ruta.Lista.path) {
+                        composable(Navegacion.Lista.path) {
                             CatalogoPelis()
                         }
                     }

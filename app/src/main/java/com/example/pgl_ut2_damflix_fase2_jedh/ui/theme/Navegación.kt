@@ -6,22 +6,21 @@ import androidx.compose.material.icons.filled.AddBox
 import androidx.compose.material.icons.filled.DensitySmall
 import androidx.compose.ui.graphics.vector.ImageVector
 
-class Navegacion {
-    sealed class Ruta(val path: String, val label: String, val icon: ImageVector) {
-        object Form : Ruta(
+    sealed class Navegacion(val path: String, val label: String, val icon: ImageVector) {
+        object Form : Navegacion(
             path = "form",
             label = "Form",
             icon = Icons.Filled.AddBox
         )
-        object Perfil : Ruta(
+        object Perfil : Navegacion(
             path = "perfil",
             label = "Perfil",
             icon = Icons.Filled.AccountCircle
         )
-        object Lista : Ruta(
+        object Lista : Navegacion(
             path = "lista",
             label = "Lista",
             icon = Icons.Filled.DensitySmall
         )
     }
-}
+
