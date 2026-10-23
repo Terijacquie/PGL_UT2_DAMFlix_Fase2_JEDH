@@ -68,7 +68,7 @@ class MainActivity : ComponentActivity() {
                     .size(80.dp)
                     .clip(CircleShape)
             )
-            Spacer(modifier = Modifier.width(100.dp))
+
             Column {
                 Text(
                     text = stringResource(id = R.string.perfilNombre1)
