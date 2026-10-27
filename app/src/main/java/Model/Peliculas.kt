@@ -1,9 +1,9 @@
-package com.example.pgl_ut2_damflix_fase2_jedh.ui.theme
+package Model
 
 import androidx.annotation.DrawableRes
 
 data class Peliculas(
-    val id: Int,
+    val id: Int = 0,
     val titulo: String,
     val director: String,
     val anioEstreno: Int,

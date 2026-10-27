@@ -1,5 +1,10 @@
-package com.example.pgl_ut2_damflix_fase2_jedh.ui.theme
+package View
 
+import Model.DAMFlixDbHelper
+import Model.PeliculaRepository
+import View.Other.PGL_UT2_DAMFlix_Fase2_JEDHTheme
+import ViewModel.PeliculaViewModel
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -35,10 +40,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -46,6 +55,7 @@ import androidx.navigation.compose.rememberNavController
 
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
+    @SuppressLint("ViewModelConstructorInComposable")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -91,19 +101,25 @@ class MainActivity : ComponentActivity() {
                         }
                     }
                 ) { innerPadding ->
+                    val dbHelper = DAMFlixDbHelper(this)
+
+                    val repositorio = PeliculaRepository(dbHelper)
+
+                    val viewModelPeliculas = PeliculaViewModel(repositorio)
+
                     NavHost(
                         navController = navController,
                         startDestination = Navegacion.Form.path,
                         modifier = Modifier.padding(innerPadding)
                     ) {
                         composable(Navegacion.Form.path) {
-                            FormularioPelis()
+                            FormularioPelis(viewModelPeliculas)
                         }
                         composable(Navegacion.Perfil.path) {
                             CriticosAutores()
                         }
                         composable(Navegacion.Lista.path) {
-                            CatalogoPelis()
+                            CatalogoPelis(viewModelPeliculas)
                         }
                     }
                 }
@@ -113,13 +129,20 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun FormularioPelis(modifier: Modifier = Modifier, valor: String = "") {
-    var peli by remember { mutableStateOf("") }
-    var director by remember { mutableStateOf("") }
-    var anio by remember { mutableStateOf("") }
-    var checkeado by remember { mutableStateOf(false) }
+fun FormularioPelis(
+    //Le pongo el nulo para que pueda ser opcional y verse en el preview
+    viewModel: PeliculaViewModel? = null,
+    onPeliculaGuardada: () -> Unit = {},
+    modifier: Modifier = Modifier
+) {
+    var titulo by remember {mutableStateOf("")}
+    var director by remember {mutableStateOf("")}
+    var anioTexto by remember {mutableStateOf("")}
+    var esVista by remember {mutableStateOf(false)}
 
-    val formularioValido = peli.isNotEmpty() && director.isNotEmpty()
+   val esFormularioValido = titulo.isNotBlank() &&
+                            director.isNotBlank() &&
+                            anioTexto.isNotBlank() != null
 
     Column(
         modifier = modifier
@@ -128,11 +151,11 @@ fun FormularioPelis(modifier: Modifier = Modifier, valor: String = "") {
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         OutlinedTextField(
-            value = peli,
+            value = titulo,
             singleLine = true,
             maxLines = 1,
             minLines = 1,
-            onValueChange = { peli = it },
+            onValueChange = { titulo = it },
             modifier = Modifier.fillMaxWidth(),
             enabled = true,
             readOnly = false,
@@ -171,11 +194,11 @@ fun FormularioPelis(modifier: Modifier = Modifier, valor: String = "") {
         )
 
         OutlinedTextField(
-            value = anio,
+            value = anioTexto,
             singleLine = true,
             maxLines = 1,
             minLines = 1,
-            onValueChange = { anio = it },
+            onValueChange = { anioTexto = it },
             modifier = Modifier.fillMaxWidth(),
             enabled = true,
             textStyle = TextStyle(color = Color.Black),
@@ -197,16 +220,30 @@ fun FormularioPelis(modifier: Modifier = Modifier, valor: String = "") {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Checkbox(
-                checked = checkeado,
-                onCheckedChange = { checkeado = it }
+                checked = esVista,
+                onCheckedChange = { esVista = it }
             )
-            Text(text = "Visto")
+            Text(text = "Vista")
         }
 
         Button(
-            onClick = { },
+            onClick = {
+                val anio = anioTexto.toIntOrNull() ?: 0
+                // Pendiente. El IDE me pidio ponerle el null, debo averiguar por qué
+                viewModel?.agregarPelicula(
+                    title = titulo,
+                    director = director,
+                    year = anio,
+                    watched = esVista
+                )
+                titulo = ""
+                director = ""
+                anioTexto = ""
+                esVista = false
+                onPeliculaGuardada()
+            },
             modifier = Modifier.fillMaxWidth(),
-            enabled = formularioValido
+            enabled = esFormularioValido
         ) {
             Text(text = "Guardar Película")
         }
@@ -219,4 +256,5 @@ fun GreetingPreview() {
     PGL_UT2_DAMFlix_Fase2_JEDHTheme {
         FormularioPelis()
     }
-}
+ }
+

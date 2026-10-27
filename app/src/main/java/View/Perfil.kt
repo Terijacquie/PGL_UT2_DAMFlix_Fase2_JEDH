@@ -1,20 +1,15 @@
-package com.example.pgl_ut2_damflix_fase2_jedh.ui.theme
+package View
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
+import View.Other.PGL_UT2_DAMFlix_Fase2_JEDHTheme
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -26,25 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.pgl_ut2_damflix_fase2_jedh.R
 
-class DAMFlix2 : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                PGL_UT2_DAMFlix_Fase2_JEDHTheme {
-                    CriticosAutores(
-                        rol = stringResource(id = R.string.rol1),
-                        pelis = stringResource(id = R.string.películasVistas1),
-                        nombre = stringResource(id = R.string.perfilNombre1),
-                        resenias = stringResource(id = R.string.resenias1),
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
-            }
-        }
-    }
-}
+
 
 @Composable
 fun CriticosAutores(

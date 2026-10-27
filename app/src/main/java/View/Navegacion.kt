@@ -1,4 +1,4 @@
-package com.example.pgl_ut2_damflix_fase2_jedh.ui.theme
+package View
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle

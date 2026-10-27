@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PGL_UT2_DAMFlix_Fase2_JEDH">
         <activity
-            android:name=".ui.theme.MainActivity"
+            android:name="View.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.PGL_UT2_DAMFlix_Fase2_JEDH"

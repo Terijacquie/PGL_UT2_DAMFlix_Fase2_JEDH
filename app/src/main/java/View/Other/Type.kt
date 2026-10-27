@@ -1,4 +1,4 @@
-package com.example.pgl_ut2_damflix_fase2_jedh.ui.theme
+package View.Other
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
