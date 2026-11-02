@@ -1,10 +1,8 @@
-package View
+package com.example.pgl_ut2_damflix_fase2_jedh.View
 
-import Model.DAMFlixDbHelper
-import Model.PeliculaRepository
-import View.Other.PGL_UT2_DAMFlix_Fase2_JEDHTheme
-import ViewModel.PeliculaViewModel
-import android.annotation.SuppressLint
+import com.example.pgl_ut2_damflix_fase2_jedh.View.Other.PGL_UT2_DAMFlix_Fase2_JEDHTheme
+import com.example.pgl_ut2_damflix_fase2_jedh.ViewModel.PeliculaViewModel
+import com.example.pgl_ut2_damflix_fase2_jedh.ViewModel.PeliculaViewModelFactory
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -22,16 +20,9 @@ import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Movie
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -40,89 +31,29 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
+import com.example.pgl_ut2_damflix_fase2_jedh.DAMflixApplication
 
+// Las siguientes anotaciones Son respecto al paso 4 de la fase 6
 class MainActivity : ComponentActivity() {
-    @OptIn(ExperimentalMaterial3Api::class)
-    @SuppressLint("ViewModelConstructorInComposable")
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        // 1. Obtenemos el contenedor global de la app
+        val app = application as DAMflixApplication
+        // 2. Creamos la fábrica pasándole el repositorio Singleton almacenado en Application
+        val factory = PeliculaViewModelFactory(app.repository)
         setContent {
             PGL_UT2_DAMFlix_Fase2_JEDHTheme {
-                val navController = rememberNavController()
-                Scaffold(
-                    topBar = {
-                        TopAppBar(
-                            title = { Text(text = "Catálogo de películas") },
-                            colors = TopAppBarDefaults.topAppBarColors(
-                                containerColor = MaterialTheme.colorScheme.primaryContainer
-                            )
-                        )
-                    },
-                    bottomBar = {
-                        val navBackStackEntry by navController.currentBackStackEntryAsState()
-                        val rutaActual = navBackStackEntry?.destination?.route
-
-                        NavigationBar {
-                            listOf(
-                                Navegacion.Form,
-                                Navegacion.Perfil,
-                                Navegacion.Lista
-                            ).forEach { ruta ->
-                                NavigationBarItem(
-                                    selected = rutaActual == ruta.path,
-                                    onClick = {
-                                        if (rutaActual != ruta.path) {
-                                            navController.navigate(ruta.path) {
-                                                popUpTo(navController.graph.startDestinationId) {
-                                                    saveState = true
-                                                }
-                                                launchSingleTop = true
-                                                restoreState = true
-                                            }
-                                        }
-                                    },
-                                    icon = { Icon(ruta.icon, contentDescription = ruta.label) },
-                                    label = { Text(ruta.label) }
-                                )
-                            }
-                        }
-                    }
-                ) { innerPadding ->
-                    val dbHelper = DAMFlixDbHelper(this)
-
-                    val repositorio = PeliculaRepository(dbHelper)
-
-                    val viewModelPeliculas = PeliculaViewModel(repositorio)
-
-                    NavHost(
-                        navController = navController,
-                        startDestination = Navegacion.Form.path,
-                        modifier = Modifier.padding(innerPadding)
-                    ) {
-                        composable(Navegacion.Form.path) {
-                            FormularioPelis(viewModelPeliculas)
-                        }
-                        composable(Navegacion.Perfil.path) {
-                            CriticosAutores()
-                        }
-                        composable(Navegacion.Lista.path) {
-                            CatalogoPelis(viewModelPeliculas)
-                        }
-                    }
-                }
+               //3. Compose obtiene y mantiene el Viewmodel retenido ante rotaciones mediante la fábrica
+                val viewModel: PeliculaViewModel = viewModel(factory = factory)
+               //4. Invocamos la pantalla principal pasando el ViewModel
+                AppDAMFlixMainScreen(viewModel = viewModel)
             }
         }
     }
@@ -130,19 +61,18 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun FormularioPelis(
-    //Le pongo el nulo para que pueda ser opcional y verse en el preview
     viewModel: PeliculaViewModel? = null,
     onPeliculaGuardada: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
-    var titulo by remember {mutableStateOf("")}
-    var director by remember {mutableStateOf("")}
-    var anioTexto by remember {mutableStateOf("")}
-    var esVista by remember {mutableStateOf(false)}
+    var titulo by remember { mutableStateOf("") }
+    var director by remember { mutableStateOf("") }
+    var anioTexto by remember { mutableStateOf("") }
+    var esVista by remember { mutableStateOf(false) }
 
-   val esFormularioValido = titulo.isNotBlank() &&
-                            director.isNotBlank() &&
-                            anioTexto.isNotBlank() != null
+    val esFormularioValido = titulo.isNotBlank() &&
+            director.isNotBlank() &&
+            anioTexto.isNotBlank()
 
     Column(
         modifier = modifier
@@ -211,7 +141,7 @@ fun FormularioPelis(
                 Icon(imageVector = Icons.Default.CheckCircle, contentDescription = "")
             },
             isError = false,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
         )
 
         Row(
@@ -229,7 +159,6 @@ fun FormularioPelis(
         Button(
             onClick = {
                 val anio = anioTexto.toIntOrNull() ?: 0
-                // Pendiente. El IDE me pidio ponerle el null, debo averiguar por qué
                 viewModel?.agregarPelicula(
                     title = titulo,
                     director = director,
@@ -256,5 +185,4 @@ fun GreetingPreview() {
     PGL_UT2_DAMFlix_Fase2_JEDHTheme {
         FormularioPelis()
     }
- }
-
+}

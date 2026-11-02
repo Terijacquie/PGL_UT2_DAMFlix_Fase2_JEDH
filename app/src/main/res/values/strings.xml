@@ -2,6 +2,6 @@
         <string name="app_name">PGL_UT2_DAMFlix_JEDH</string>
         <string name="perfilNombre1">Rabi Ganesh</string>
         <string name="rol1">Crítico</string>
-        <string name="películasVistas1">Películas vistas: 42</string>
+        <string name="peliculasVistas1">Películas vistas: 42</string>
         <string name="resenias1">Reseñas: 30</string>
     </resources>

@@ -1,6 +1,6 @@
-package View
+package com.example.pgl_ut2_damflix_fase2_jedh.View
 
-import View.Other.PGL_UT2_DAMFlix_Fase2_JEDHTheme
+import com.example.pgl_ut2_damflix_fase2_jedh.View.Other.PGL_UT2_DAMFlix_Fase2_JEDHTheme
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -26,7 +26,7 @@ import com.example.pgl_ut2_damflix_fase2_jedh.R
 @Composable
 fun CriticosAutores(
     rol: String = stringResource(id = R.string.rol1),
-    pelis: String = stringResource(id = R.string.películasVistas1),
+    pelis: String = stringResource(id = R.string.peliculasVistas1),
     nombre: String = stringResource(id = R.string.perfilNombre1),
     resenias: String = stringResource(id = R.string.resenias1),
     modifier: Modifier = Modifier

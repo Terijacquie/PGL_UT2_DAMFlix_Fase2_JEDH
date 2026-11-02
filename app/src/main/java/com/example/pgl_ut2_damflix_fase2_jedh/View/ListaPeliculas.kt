@@ -1,8 +1,7 @@
-package View
+package com.example.pgl_ut2_damflix_fase2_jedh.View
 
-import Model.Peliculas
-import View.Other.PGL_UT2_DAMFlix_Fase2_JEDHTheme
-import ViewModel.PeliculaViewModel
+import com.example.pgl_ut2_damflix_fase2_jedh.Model.Peliculas
+import com.example.pgl_ut2_damflix_fase2_jedh.ViewModel.PeliculaViewModel
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -40,7 +39,7 @@ fun CatalogoPelis(
 ) {
     // nuevo añadido 27/10/26
 
-    val peliculas by viewModel.listaPelicula.collectAsStateWithLifecycle()
+    val peliculas by viewModel.listaPeliculas.collectAsStateWithLifecycle()
 
     // 1. Declaramos la lista mutable interna de la pantalla
     // 27/10/26: Lo dejaré por el momento
@@ -100,12 +99,12 @@ fun CatalogoPelis(
                             .padding(12.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(text = pelicula.titulo, modifier = Modifier.weight(1f))
+                        Text(text = pelicula.title, modifier = Modifier.weight(1f))
                         IconButton(onClick = { viewModel.conmutarFavorito(pelicula)}) {
                             Icon(
-                                imageVector = if (pelicula.esFavorita) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                                imageVector = if (pelicula.favorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                                 contentDescription = "Favorito",
-                                tint = if (pelicula.esFavorita) Color.Red else Color.Gray
+                                tint = if (pelicula.favorite) Color.Red else Color.Gray
                             )
                         }
                     }

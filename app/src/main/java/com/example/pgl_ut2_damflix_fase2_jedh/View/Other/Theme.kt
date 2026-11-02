@@ -1,4 +1,4 @@
-package View.Other
+package com.example.pgl_ut2_damflix_fase2_jedh.View.Other
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme

@@ -1,4 +1,4 @@
-package Model
+package com.example.pgl_ut2_damflix_fase2_jedh.Model
 
 import androidx.annotation.DrawableRes
 
