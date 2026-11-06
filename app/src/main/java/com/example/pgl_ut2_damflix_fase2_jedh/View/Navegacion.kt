@@ -6,17 +6,26 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.AddBox
 import androidx.compose.material.icons.filled.DensitySmall
+import androidx.compose.material.icons.filled.Details
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.example.pgl_ut2_damflix_fase2_jedh.DAMflixApplication
+import com.example.pgl_ut2_damflix_fase2_jedh.ViewModel.DetallePeliculaViewModel
+import com.example.pgl_ut2_damflix_fase2_jedh.ViewModel.DetallePeliculaViewModelFactory
 import kotlinx.coroutines.launch
+
 
 sealed class Navegacion(val path: String, val label: String, val icon: ImageVector) {
     object Form : Navegacion(
@@ -24,16 +33,23 @@ sealed class Navegacion(val path: String, val label: String, val icon: ImageVect
         label = "Form",
         icon = Icons.Filled.AddBox
     )
+
     object Perfil : Navegacion(
         path = "perfil",
         label = "Perfil",
         icon = Icons.Filled.AccountCircle
     )
+
     object Lista : Navegacion(
         path = "lista",
         label = "Lista",
         icon = Icons.Filled.DensitySmall
     )
+
+    //Nota del profesor: Ruta dinámica con parámetro de ID (en minúsculas)
+    object Detalle : Navegacion("detalle/{peliculaId}", "Detalle", Icons.Filled.Details) {
+        fun crearRuta(peliculaId: Int) = "detalle/$peliculaId"
+    }
 }
 
 // Nota: Para que el main se viera más limpio, pase el bottom bar aquí
@@ -56,7 +72,9 @@ fun AppDAMFlixMainScreen(viewModel: PeliculaViewModel) {
         drawerContent = {
             ModalDrawerSheet {
                 // Cabecera del Menú Lateral
-                Box(modifier = Modifier.fillMaxWidth().padding(24.dp)) {
+                Box(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(24.dp)) {
                     Text(
                         text = "Navegación",
                         style = MaterialTheme.typography.headlineMedium,
@@ -77,9 +95,9 @@ fun AppDAMFlixMainScreen(viewModel: PeliculaViewModel) {
                             coroutineScope.launch { drawerState.close() }
                             if (rutaActual != opcion.path) {
                                 navController.navigate(opcion.path) {
-                                   // popUpTo(navController.graph.startDestinationId) { saveState = true }
-                                   // launchSingleTop = true
-                                   // restoreState = true
+                                    // popUpTo(navController.graph.startDestinationId) { saveState = true }
+                                    // launchSingleTop = true
+                                    // restoreState = true
                                 }
                             }
                         },
@@ -111,9 +129,9 @@ fun AppDAMFlixMainScreen(viewModel: PeliculaViewModel) {
                             onClick = {
                                 if (rutaActual != opcion.path) {
                                     navController.navigate(opcion.path) {
-                                       // popUpTo(navController.graph.startDestinationId) { saveState = true }
-                                       // launchSingleTop = true
-                                       // restoreState = true
+                                        // popUpTo(navController.graph.startDestinationId) { saveState = true }
+                                        // launchSingleTop = true
+                                        // restoreState = true
                                     }
                                 }
                             },
@@ -141,7 +159,39 @@ fun AppDAMFlixMainScreen(viewModel: PeliculaViewModel) {
                     CriticosAutores()
                 }
                 composable(Navegacion.Lista.path) {
-                    CatalogoPelis(viewModel = viewModel)
+                    CatalogoPelis(
+                        viewModel = viewModel,
+                        onPeliculaClick = { peliculaId ->
+                            navController.navigate(Navegacion.Detalle.crearRuta(peliculaId))
+                        }
+                    )
+                }
+                composable(Navegacion.Detalle.path) {
+                    FormularioPelis(viewModel)
+                }
+
+                //2. Prfesor: Detalle con lectura del argumento peliculaId e inyección del ViewModel
+                composable(
+                    route = Navegacion.Detalle.path,
+                    arguments = listOf(
+                        navArgument("peliculaId") {
+                            type = NavType.IntType
+                        }
+                    )
+                ) { backStackEntry ->
+                    val id = backStackEntry.arguments?.getInt("peliculaId") ?: 0
+                    val context = LocalContext.current
+                    val app = context.applicationContext as DAMflixApplication
+
+                    val detalleViewModel: DetallePeliculaViewModel = viewModel(
+                        factory = DetallePeliculaViewModelFactory(app.repository)
+                    )
+
+                    PantallaDetalleScreen(
+                        peliculaId = id,
+                        viewModel = detalleViewModel,
+                        onVolver = { navController.popBackStack() }
+                    )
                 }
             }
         }

@@ -1,5 +1,6 @@
 package com.example.pgl_ut2_damflix_fase2_jedh.View
 
+import androidx.compose.foundation.clickable
 import com.example.pgl_ut2_damflix_fase2_jedh.Model.Peliculas
 import com.example.pgl_ut2_damflix_fase2_jedh.ViewModel.PeliculaViewModel
 import androidx.compose.foundation.layout.Arrangement
@@ -35,6 +36,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 fun CatalogoPelis(
     // Lo mismo que en el formulario. Para que pueda verse en el preview
     viewModel: PeliculaViewModel,
+    onPeliculaClick: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
     // nuevo añadido 27/10/26
@@ -92,7 +94,11 @@ fun CatalogoPelis(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(items = peliculas, key = { p -> p.id }) { pelicula ->
-                Card(modifier = Modifier.fillMaxWidth()) {
+                Card(
+                    modifier = Modifier.fillMaxWidth()
+                    .clickable {
+                        onPeliculaClick(pelicula.id)
+                    }) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()

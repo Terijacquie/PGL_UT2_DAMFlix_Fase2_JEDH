@@ -15,4 +15,9 @@ class PeliculaRepository(private val dao: PeliculaDao)  {
     suspend fun actualizar(pelicula: PeliculaEntity) {
         dao.actualizar(pelicula)
     }
+
+    // Agregada 06/11/2026
+    suspend fun obtenerPorId(id: Int): PeliculaEntity? {
+        return dao.obtenerPorId(id)
+    }
 }
